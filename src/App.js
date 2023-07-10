@@ -1,36 +1,35 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import './styles/App.css'
 import PostList from './components/PostList';
 import PostForm from './components/PostForm';
 import PostFilter from './components/PostFilter';
 import MyModal from './components/UI/modal/MyModal';
 import MyButton from './components/UI/button/MyButton';
+import { usePosts } from './hooks/usePosts';
+import PostService from './API/PostService';
 
 function App() {
-  const [posts, setPosts] = useState([
-    {id: 1, title: 'aaa', body: 'adsfgves'},
-    {id: 2, title: 'ggg', body: 'avfae'},
-    {id: 3, title: 'bbb', body: 'rfbnrfb'}
-  ]);
-
+  const [posts, setPosts] = useState([]);
   const [filter, setFilter] = useState({sort: '', query: ''});
   const [modal, setModal] = useState(false);
+  const [isPostsLoading, setIsPostsLoading] = useState(false);
+  const sortedAndSearchedPosts = usePosts(posts, filter.sort, filter.query);
 
-  const sortedPosts = useMemo(() => {
-    if(filter.sort) {
-      return [...posts].sort((a, b) => a[filter.sort].localeCompare(b[filter.sort]));
-    }
-    return posts;
-  }, [filter.sort, posts]);
-
-  const sortedAndSearchedPosts = useMemo(() => {
-    return sortedPosts.filter(post => post.title.toLowerCase().includes(filter.query.toLowerCase()));
-  }, [filter.query, sortedPosts]);
+  useEffect(() => {
+    fetchPosts();
+  }, [])
 
   const createPost = (newPost) => {
     setPosts([...posts, newPost]);
     setModal(false);
   };
+
+  async function fetchPosts() {
+    setIsPostsLoading(true);
+    const posts = await PostService.getAll();
+    setPosts(posts);
+    setIsPostsLoading(false);
+  }
 
   const removePost = (post) => {
     setPosts(posts.filter(p => p.id !== post.id))
@@ -53,7 +52,10 @@ function App() {
         setFilter={setFilter}
       />
 
-      <PostList remove={removePost} props={sortedAndSearchedPosts} title={'Список постов'} />
+      {isPostsLoading
+      ?<h1>Идет загрузка...</h1>
+      :<PostList remove={removePost} props={sortedAndSearchedPosts} title={'Список постов'} />
+      }
     </div>
   );
 }
