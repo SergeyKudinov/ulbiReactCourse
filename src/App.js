@@ -7,6 +7,7 @@ import MyModal from './components/UI/modal/MyModal';
 import MyButton from './components/UI/button/MyButton';
 import { usePosts } from './hooks/usePosts';
 import PostService from './API/PostService';
+import Loader from './components/UI/loader/Loader';
 
 function App() {
   const [posts, setPosts] = useState([]);
@@ -53,7 +54,7 @@ function App() {
       />
 
       {isPostsLoading
-      ?<h1>Идет загрузка...</h1>
+      ?<div style={{display: "flex", justifyContent: "center", marginTop: 50}}><Loader /></div>
       :<PostList remove={removePost} props={sortedAndSearchedPosts} title={'Список постов'} />
       }
     </div>
