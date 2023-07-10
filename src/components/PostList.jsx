@@ -1,6 +1,13 @@
 import PostItem from './PostItem'
 
 export default function PostList({props, title, remove}) {
+
+    if(!props.length) {
+        return (
+            <h1>Посты не найдены!</h1>
+        )
+    }
+
     return (
         <>
             <h1>
