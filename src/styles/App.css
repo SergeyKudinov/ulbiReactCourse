@@ -62,3 +62,7 @@
     border: 2px solid orange;
     font-weight: bold;
 }
+
+.post_btns {
+    display: flex;
+}

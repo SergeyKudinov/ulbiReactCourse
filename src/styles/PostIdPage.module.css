@@ -1,0 +1,9 @@
+.wrapper {
+    width: 100%;
+    max-width: 800px;
+}
+.title {
+    font: bold;
+    text-align: center;
+    margin: 10px 0;
+}
